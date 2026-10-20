@@ -8,7 +8,7 @@
 
 ## The problem
 
-_Earthquakes can cause significant loss of life and economic damage, but their impacts may vary depending on a country's economic conditions and whether an earthquake is associated with a tsunami. In this project, we aim to explore the relationships between economic prosperity, earthquake-related losses, and tsunami association. By combining historical earthquake records with World Bank GDP per capita data, we will investigate patterns in reported fatalities and economic damage. Understanding these patterns can help us better explore the different human and economic consequences of significant earthquakes._
+_Earthquakes can cause significant loss of lives and economic damage, but their impacts may vary depending on a country's economic conditions and whether an earthquake is associated with a tsunami. In this project, we aim to explore the relationships between economic prosperity, earthquake-related losses, and tsunami association. By combining historical earthquake records with World Bank GDP per capita data, we will investigate patterns in reported fatalities and economic damage. Understanding these patterns can help us better explore the different human and economic consequences of significant earthquakes._
 
 ## The data
 
@@ -21,4 +21,4 @@ _Earthquakes can cause significant loss of life and economic damage, but their i
 
 1. _How is a country's level of economic prosperity associated with earthquake-related fatalities and economic damage?_
 2. _Do significant earthquakes associated with tsunamis have different patterns of human and economic losses than other significant earthquakes of comparable magnitude?_
-3. _Are earthquakes with higher reported fatalities also associated with greater economic damage?_
+3. _Are earthquakes with higher reported loss of lives also associated with greater economic damage?_
