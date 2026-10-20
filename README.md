@@ -4,9 +4,9 @@
 Project abstract. Should be around 180-200 words. No visuals here.
 
 ## Student Names
-- Avsu Evren 122203065
-- İlke Bakangil 122203050
-- Yasemin Celiloğlu 122203054
+- Avsu Evren (122203065)
+- İlke Bakangil (122203050)
+- Yasemin Celiloğlu (122203054)
 
 ## Files (Explain each of them with a sentence)
 - `data/`: Contains the datasets used. (Define your datasets here. The full description goes in the data card, `data/README.md`. Raw downloads stay in `data/raw/` and are not committed.)
