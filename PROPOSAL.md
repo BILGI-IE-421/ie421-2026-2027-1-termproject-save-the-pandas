@@ -14,7 +14,7 @@ _Earthquakes can cause significant loss of lives and economic damage, but their 
 
 | Dataset | Link | What is in it |
 |---|---|---|
-|NOAA Global Significant Earthquake Database |https://www.ngdc.noaa.gov/hazel/view/hazards/earthquake/event-data?maxEqMagnitude=9.9&maxYear=2024&minYear=1960&minEqMagnitude=0 |Historical records of significant earthquakes, including their dates, locations, magnitudes, tsunami association, reported fatalities, and economic damage.|
+|NOAA Global Significant Earthquake Database |https://www.ngdc.noaa.gov/hazel/view/hazards/earthquake/event-data?maxEqMagnitude=9.9&maxYear=2024&minYear=1960&minEqMagnitude=0 |Historical records of significant earthquakes, including their dates, locations, magnitudes, tsunami association, reported loss of lives, and economic damage.|
 | World Bank — GDP per capita|https://api.worldbank.org/v2/country/all/indicator/NY.GDP.PCAP.CD?format=json&per_page=20000&date=1960:2024 | Annual country-level GDP per capita data, used as an indicator of economic prosperity.|
 
 ## Our questions
