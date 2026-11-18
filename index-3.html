@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="An exploratory analysis of human and economic impacts associated with significant earthquakes.">
+  <title>Restless Earth | Save the Pandas</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #596579;
+      --paper: #f5f7fb;
+      --card: #ffffff;
+      --line: #e3e8f0;
+      --blue: #0072B2;
+      --orange: #E69F00;
+      --navy: #102b46;
+      --max: 1120px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; color: var(--ink); background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+    .hero {
+      color: white; padding: 76px 24px 68px;
+      background: linear-gradient(120deg, #102b46 0%, #174c70 58%, #1c6680 100%);
+    }
+    .hero-inner, main, footer { max-width: var(--max); margin: 0 auto; }
+    .eyebrow { text-transform: uppercase; letter-spacing: .16em; font-size: .78rem; font-weight: 750; opacity: .82; }
+    h1 { font-size: clamp(2.25rem, 5vw, 3.8rem); line-height: 1.08; margin: 14px 0 18px; max-width: 850px; }
+    .hero p { max-width: 760px; color: #e5edf5; font-size: 1.12rem; margin: 0; }
+    .team { margin-top: 25px; font-size: .9rem; color: #d3e1ed; }
+    nav {
+      background: rgba(255,255,255,.97); border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; z-index: 5; backdrop-filter: blur(10px);
+    }
+    nav .nav-inner {
+      max-width: var(--max); margin: auto; padding: 0 24px;
+      display: flex; gap: 26px; align-items: center; min-height: 56px; overflow-x: auto;
+    }
+    nav a { color: var(--muted); text-decoration: none; font-size: .92rem; font-weight: 650; white-space: nowrap; }
+    nav a:hover { color: var(--blue); }
+    main { padding: 42px 24px 70px; }
+    .intro { max-width: 850px; margin: 0 0 38px; }
+    .intro h2 { font-size: 1.8rem; margin: 0 0 10px; }
+    .intro p { color: var(--muted); margin: 0; }
+    .section { margin: 34px 0 48px; }
+    .section-head { margin-bottom: 18px; }
+    .kicker { color: var(--blue); text-transform: uppercase; letter-spacing: .12em; font-size: .76rem; font-weight: 800; }
+    h2 { line-height: 1.25; }
+    .section h2 { font-size: clamp(1.45rem, 3vw, 2rem); margin: 7px 0 10px; }
+    .rq { color: var(--muted); font-size: 1.05rem; max-width: 900px; margin: 0; }
+    .figure-card, .text-card {
+      background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+      box-shadow: 0 8px 26px rgba(20, 40, 65, .045); overflow: hidden;
+    }
+    .figure-card { padding: 18px 18px 12px; }
+    figure { margin: 0; }
+    figure img { display: block; width: 100%; height: auto; border-radius: 10px; }
+    figcaption { color: var(--muted); font-size: .88rem; padding: 13px 5px 3px; }
+    .source { display: block; margin-top: 5px; color: #43536a; font-weight: 650; }
+    .explanation-grid {
+      display: grid; grid-template-columns: 1.15fr .85fr; gap: 18px; margin-top: 18px;
+    }
+    .text-card { padding: 22px 24px; }
+    .text-card h3 { margin: 0 0 9px; font-size: 1.05rem; }
+    .text-card p { margin: 0; color: var(--muted); }
+    .text-card ul { margin: 8px 0 0; padding-left: 20px; color: var(--muted); }
+    .text-card li + li { margin-top: 6px; }
+    .caution { border-left: 4px solid var(--orange); }
+    .note {
+      margin-top: 18px; padding: 17px 20px; border-radius: 12px;
+      background: #fff8e9; border: 1px solid #f2dfb6; color: #6d5426;
+    }
+    .note strong { color: #503b16; }
+    .method { margin-top: 54px; }
+    .method h2 { font-size: 1.65rem; margin-bottom: 12px; }
+    .method p { color: var(--muted); max-width: 900px; }
+    .source-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
+    .source-item { background: white; border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+    .source-item strong { display: block; margin-bottom: 4px; }
+    .source-item span { color: var(--muted); font-size: .9rem; }
+    footer { padding: 0 24px 36px; color: var(--muted); font-size: .88rem; }
+    @media (max-width: 760px) {
+      .hero { padding: 55px 22px; }
+      main { padding: 30px 16px 55px; }
+      .explanation-grid, .source-list { grid-template-columns: 1fr; }
+      .figure-card { padding: 10px 10px 8px; }
+      .text-card { padding: 18px; }
+      nav .nav-inner { padding: 0 16px; gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">IE 421 · Data Science for Engineers</div>
+      <h1>Restless Earth: Understanding the Impacts of Significant Earthquakes</h1>
+      <p>
+        Earthquakes are natural events, but their consequences are shaped by the places
+        and communities they affect. This project explores how reported human and
+        economic losses vary across income groups and how reported deaths relate to
+        earthquake magnitude and recorded tsunami association.
+      </p>
+      <div class="team">Team: Save the Pandas</div>
+    </div>
+  </header>
+
+  <nav aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="#overview">Overview</a>
+      <a href="#rq1">GDP groups</a>
+      <a href="#rq2">Magnitude &amp; tsunami</a>
+      <a href="#methodology">Data &amp; limitations</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="intro" id="overview">
+      <h2>What does the data tell us?</h2>
+      <p>
+        We combine significant earthquake records from NOAA with country-year GDP per
+        capita data from the World Bank and Consumer Price Index data from FRED.
+        The visualizations are descriptive: they show patterns in the available
+        records and do not establish that income level or tsunami association causes
+        a particular level of loss.
+      </p>
+    </section>
+
+    <section class="section" id="rq1">
+      <div class="section-head">
+        <div class="kicker">Research question 1</div>
+        <h2>How do human and economic impacts differ across GDP per capita groups?</h2>
+        <p class="rq">
+          Earthquake records are grouped into four quartiles according to the
+          corresponding country-year GDP per capita. We compare the median reported
+          deaths and median reported economic damage in each group.
+        </p>
+      </div>
+
+      <div class="figure-card">
+        <figure>
+          <img src="visuals/fig1_rq1_income_groups.png"
+               alt="Two bar charts comparing median reported deaths and median CPI-adjusted economic damage across four GDP per capita groups, with 95 percent bootstrap intervals.">
+          <figcaption>
+            Bars show the median for each GDP group. Whiskers show 95% bootstrap
+            confidence intervals of the median. The sample size (n) is the number
+            of earthquake records with an available GDP value and a positive,
+            reported outcome for the relevant panel.
+            <span class="source">Sources: NOAA Significant Earthquakes; World Bank GDP per capita; FRED CPI.</span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="explanation-grid">
+        <article class="text-card">
+          <h3>How to read the figure</h3>
+          <p>
+            The left panel shows that median reported deaths are higher in the
+            lowest GDP quartile (Q1) than in the highest quartile (Q4): 9 versus
+            3 deaths per recorded event. The right panel shows the opposite pattern
+            for reported economic damage: the median rises from about 20.7 million
+            2024 USD in Q1 to about 177.5 million 2024 USD in Q4. These are
+            differences in the recorded event-level medians, not estimates of
+            each country's overall earthquake risk.
+          </p>
+        </article>
+        <article class="text-card caution">
+          <h3>Limitations to keep in mind</h3>
+          <ul>
+            <li>GDP quartiles are calculated across earthquake records with available GDP data. They are country-year groups, not permanent labels for countries.</li>
+            <li>Only positive reported death and damage values are plotted. Missing or unreported values are not treated as zero; events without an outcome value are excluded from that panel.</li>
+            <li>Damage is adjusted using the US CPI series. This provides a common 2024-dollar reference but does not account for country-specific inflation or differences in asset prices.</li>
+            <li>Economic losses depend on the value and exposure of assets, reporting coverage, and other factors—not only on GDP per capita.</li>
+            <li>Events from the same country may not be independent. The intervals resample earthquake records, not whole countries.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="rq2">
+      <div class="section-head">
+        <div class="kicker">Research question 2</div>
+        <h2>How are earthquake magnitude and reported human losses related across tsunami groups?</h2>
+        <p class="rq">
+          This figure compares average reported deaths across magnitude intervals
+          for earthquakes with and without a recorded NOAA tsunami association.
+          It focuses on earthquakes with magnitudes from 7.0 to 9.0.
+        </p>
+      </div>
+
+      <div class="figure-card">
+        <figure>
+          <img src="visuals/fig2_rq2_magnitude_human_losses.png"
+               alt="Line chart showing average reported deaths by earthquake magnitude in 0.25 magnitude intervals, with separate lines for tsunami-associated and no recorded tsunami association events.">
+          <figcaption>
+            Each point represents the mean reported deaths among events in a
+            0.25-magnitude interval. Lines connect the interval means. Only
+            earthquakes with a positive reported death count are included.
+            <span class="source">Source: NOAA Significant Earthquakes.</span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="explanation-grid">
+        <article class="text-card">
+          <h3>How to read the figure</h3>
+          <p>
+            The two lines fluctuate substantially rather than following a steady
+            upward or downward pattern. In some magnitude intervals, the mean
+            reported deaths are higher among tsunami-associated events; in others,
+            the non-tsunami-associated group has the higher mean. This suggests
+            that magnitude alone does not describe the variation in reported human
+            losses in this sample. The number of events differs between intervals,
+            so individual points should be interpreted alongside their sample sizes.
+          </p>
+        </article>
+        <article class="text-card caution">
+          <h3>Limitations to keep in mind</h3>
+          <ul>
+            <li>The analysis includes only events with a recorded positive death count. Events with missing death information and zero values are excluded; therefore, the figure does not represent all significant earthquakes.</li>
+            <li>The vertical axis starts at 5 rather than zero. This truncated scale makes small differences near the bottom easier to see, but can visually exaggerate differences.</li>
+            <li>The mean is sensitive to a small number of earthquakes with very high death tolls. Some magnitude intervals contain very few observations, especially at the upper end.</li>
+            <li>The magnitude intervals are 0.25 units wide in this figure. They are not half-unit bands.</li>
+            <li>This figure covers human losses only. It does not show the economic-loss comparison, and it does not by itself complete a research question that asks about both human and economic losses.</li>
+            <li>A recorded tsunami association indicates a link in the NOAA data; it does not prove that a tsunami caused the reported deaths.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="note">
+        <strong>Interpretation note:</strong> The current chart is an exploratory
+        comparison of mean deaths by magnitude interval. If the final RQ explicitly
+        requires comparing both human and economic losses within the same
+        half-unit magnitude band, the analysis and figure should be extended to
+        include economic damage and use half-unit bands before making that claim.
+      </div>
+    </section>
+
+    <section class="method" id="methodology">
+      <div class="kicker">Methodology</div>
+      <h2>Data sources and overall limitations</h2>
+      <p>
+        The analysis uses significant earthquake records from 1960–2024. Country
+        names are matched to World Bank ISO3 codes to merge annual GDP per capita.
+        Monthly FRED CPI observations are averaged by year and used to express
+        reported damage in 2024 US dollars. Records without a magnitude are removed
+        during preprocessing. Missing values are retained as missing rather than
+        being converted to zero.
+      </p>
+      <div class="source-list">
+        <div class="source-item">
+          <strong>NOAA</strong>
+          <span>Significant Earthquake Database — event characteristics, tsunami association, reported deaths and damage.</span>
+        </div>
+        <div class="source-item">
+          <strong>World Bank</strong>
+          <span>GDP per capita (constant 2015 US$), indicator NY.GDP.PCAP.KD.</span>
+        </div>
+        <div class="source-item">
+          <strong>FRED</strong>
+          <span>CPI for All Urban Consumers: All Items in U.S. City Average (CPIAUCNS), used for the damage adjustment.</span>
+        </div>
+      </div>
+      <p>
+        This is an observational dataset of significant earthquakes, not a complete
+        catalogue of every earthquake. Reporting practices and data availability
+        may differ across countries and years. The figures describe associations
+        in the available records; they do not establish causal relationships.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    IE 421 · Save the Pandas · Restless Earth
+  </footer>
+</body>
+</html>
