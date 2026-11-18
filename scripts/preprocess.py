@@ -390,6 +390,14 @@ noaa = noaa.rename(columns={
 })
 
 # --------------------------------------------------
+# Convert the columns to an integer (Int64) type
+# --------------------------------------------------
+integer_columns = ['deathsTotal', 'death_description', 'damage_description']
+for col in integer_columns:
+    if col in noaa.columns:
+        noaa[col] = pd.to_numeric(noaa[col], errors='coerce').astype('Int64')
+
+# --------------------------------------------------
 # STEP 6: SELECT COMMON DATASET COLUMNS
 # --------------------------------------------------
 
