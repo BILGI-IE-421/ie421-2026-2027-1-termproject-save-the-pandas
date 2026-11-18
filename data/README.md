@@ -2,7 +2,7 @@
 
 This project uses three datasets: NOAA Significant Earthquakes, World Bank GDP per capita, and FRED Consumer Price Index (CPI). The datasets are combined and processed using `scripts/preprocess.py` to generate the final cleaned dataset, `data/cleaned_data.csv`.
 
-## Dataset 1: NOAA Significant Earthquakes (`noaa_significant_earthquakes.csv`)
+## Dataset 1: NOAA Global Significant Earthquake Database (`noaa_significant_earthquakes.csv`)
 
 - **Source and URL:** NOAA Significant Earthquakes Database, https://www.ngdc.noaa.gov/hazel/view/hazards/earthquake/search
 - **License:** Publicly available data provided by the U.S. National Oceanic and Atmospheric Administration (NOAA).
@@ -14,7 +14,7 @@ This project uses three datasets: NOAA Significant Earthquakes, World Bank GDP p
 - **Cleaning decisions and why:** Rows with missing earthquake magnitude are removed because magnitude is essential to the analysis. Country names are standardized and mapped to ISO3 codes to enable merging with World Bank data. Year, month, and day fields are converted to numeric values, and event dates are constructed. Records are restricted to 1960–2024. Negative damage values are checked and excluded. Missing death and damage values are retained rather than replaced with zero.
 - **How to regenerate:** `python scripts/download_data.py && python scripts/preprocess.py`
 
-## Dataset 2: World Bank GDP per capita (`world_bank_gdp_per_capita_api.csv`)
+## Dataset 2: World Bank GDP per capita, constant 2015 US$ (`world_bank_gdp_per_capita_api.csv`)
 
 - **Source and URL:** World Bank Open Data, GDP per capita (constant 2015 US$), https://data.worldbank.org/indicator/NY.GDP.PCAP.KD
 - **License:** World Bank data is provided under the World Bank's open data terms. See the source website for licensing details.
@@ -26,7 +26,7 @@ This project uses three datasets: NOAA Significant Earthquakes, World Bank GDP p
 - **Cleaning decisions and why:** Year and GDP values are converted to numeric types. Records with missing ISO3 codes or years are checked, and duplicate country-year combinations are checked to ensure a valid many-to-one merge. Negative GDP values are checked. The dataset is merged with earthquake records using ISO3 and year, with a left join to preserve all earthquake records. A `gdp_missing_reason` column distinguishes missing GDP observations from unmatched country codes.
 - **How to regenerate:** `python scripts/download_data.py && python scripts/preprocess.py`
 
-## Dataset 3: Consumer Price Index (`CPIAUCNS.csv`)
+## Dataset 3: FRED – Consumer Price Index (CPI) (`CPIAUCNS.csv`)
 
 - **Source and URL:** Federal Reserve Bank of St. Louis, FRED, Consumer Price Index for All Urban Consumers: All Items in U.S. City Average (CPIAUCNS), https://fred.stlouisfed.org/series/CPIAUCNS
 - **License:** FRED data is provided by the Federal Reserve Bank of St. Louis. Refer to the source for information about data usage and attribution.
