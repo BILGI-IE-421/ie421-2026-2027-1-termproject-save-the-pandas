@@ -69,9 +69,9 @@ for source, required in required_columns.items():
     if datasets[source].empty:
         raise ValueError(f"{source} dataset is empty.")
 
-# Optional NOAA columns: used for the event date (month, day) and the
-# shallow-earthquake check in RQ2 (eqDepth). Missing ones are created empty.
-optional_noaa_columns = ["month", "day", "eqDepth"]
+# Optional NOAA columns: used for the event date (month, day).
+# Missing ones are created empty.
+optional_noaa_columns = ["month", "day"]
 for column in optional_noaa_columns:
     if column not in noaa.columns:
         print(f"WARNING: NOAA column '{column}' not found; filled with NaN.")
@@ -83,6 +83,12 @@ print("\nRaw data loaded.")
 print("NOAA:", noaa.shape)
 print("World Bank:", world_bank.shape)
 print("CPI:", cpi.shape)
+
+# Drop earthquakes without a magnitude (magnitude is required for the analysis).
+noaa["eqMagnitude"] = pd.to_numeric(noaa["eqMagnitude"], errors="coerce")
+rows_before = len(noaa)
+noaa = noaa[noaa["eqMagnitude"].notna()].reset_index(drop=True)
+print(f"\nRows without eqMagnitude removed: {rows_before - len(noaa)} ({rows_before} -> {len(noaa)})")
 
 # --------------------------------------------------
 # STEP 2: PREPARE COUNTRY-ISO3 MAPPING
@@ -129,8 +135,7 @@ for country in noaa['country'].dropna().unique():
 
 noaa['ISO3'] = noaa['country'].map(noaa_to_iso3)
 
-print("\nCountry mapping completed.")
-print("Matched countries:", sum(v is not None for v in noaa_to_iso3.values()))
+print("\nMatched countries:", sum(v is not None for v in noaa_to_iso3.values()))
 print("Unmatched countries:", sum(v is None for v in noaa_to_iso3.values()))
 
 # --------------------------------------------------
@@ -251,8 +256,6 @@ noaa['Total_Damage_2024_USD_Millions'] = (
     * (cpi_2024 / noaa['CPI_annual'])
 )
 
-print("\nDamage adjustment completed.")
-
 # --------------------------------------------------
 # STEP 5: MERGE WORLD BANK GDP DATA
 # --------------------------------------------------
@@ -298,10 +301,6 @@ if len(noaa) != original_row_count:
     )
 
 print("GDP merge validation passed.")
-print("Earthquake rows preserved:", len(noaa))
-
-
-print("\nGDP data merged.")
 
 # STEP 5a: WHY IS GDP MISSING?
 # Separate missing GDP caused by our country mapping (fixable: add the name to
@@ -324,13 +323,9 @@ print(noaa["gdp_missing_reason"].value_counts().to_string())
 unmatched = (
     noaa.loc[noaa["gdp_missing_reason"] == "No ISO3 match", "country"]
     .value_counts()
-    .rename_axis("noaa_country")
-    .reset_index(name="events")
 )
-unmatched_path = OUTPUT_DIR / "unmatched_countries.csv"
-unmatched.to_csv(unmatched_path, index=False, encoding="utf-8-sig")
-print(f"\nUnmatched NOAA country names: {len(unmatched)} (saved to {unmatched_path.name})")
-print(unmatched.head(15).to_string(index=False))
+print(f"\nUnmatched NOAA country names: {len(unmatched)}")
+print(unmatched.to_string())
 
 # --------------------------------------------------
 # STEP 5b: TSUNAMI INDICATOR
@@ -367,7 +362,7 @@ def classify_status(number, description, label):
     return "Unknown"
 
 
-for column in ["deathsTotal", "deathsAmountOrderTotal", "damageAmountOrderTotal", "eqDepth"]:
+for column in ["deathsTotal", "deathsAmountOrderTotal", "damageAmountOrderTotal"]:
     noaa[column] = pd.to_numeric(noaa[column], errors="coerce")
 
 noaa["Death_Status"] = [
@@ -408,7 +403,6 @@ selected_columns = [
     'country',
     'ISO3',
     'eqMagnitude',
-    'eqDepth',
     'tsunami',
     'deathsTotal',
     'death_description',
@@ -493,14 +487,9 @@ if len(cleaned_data) != original_row_count:
     )
 
 print("All data quality checks passed.")
-print("Dataset shape:", cleaned_data.shape)
-print("Duplicate earthquake IDs:", cleaned_data["id"].duplicated().sum())
 print("Year range:", cleaned_data["year"].min(), "-", cleaned_data["year"].max())
-print("Missing GDP:", cleaned_data["GDP_per_capita_2015USD"].isna().sum())
 print("Missing deaths:", cleaned_data["deathsTotal"].isna().sum())
 print("Missing damage:", cleaned_data["damageMillionsDollarsTotal"].isna().sum())
-print("Missing date (month/day unknown):", cleaned_data["date"].isna().sum())
-print("Missing depth:", cleaned_data["eqDepth"].isna().sum())
 
 # STEP 8: SAVE CLEANED DATASET
 # --------------------------------------------------
