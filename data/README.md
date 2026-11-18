@@ -1,6 +1,6 @@
 # Data card
 
-This project uses three datasets: NOAA Significant Earthquakes, World Bank GDP per capita, and FRED Consumer Price Index (CPI). The datasets are combined and processed using `scripts/preprocess.py` to generate the final cleaned dataset, `data/cleaned_data.csv`
+This project uses three datasets: NOAA Significant Earthquakes, World Bank GDP per capita, and FRED Consumer Price Index (CPI). The datasets are combined and processed using `scripts/preprocess.py` to generate the final cleaned dataset, `data/cleaned_data.csv`.
 
 ## Dataset 1: NOAA Global Significant Earthquake Database (`noaa_significant_earthquakes.csv`)
 
