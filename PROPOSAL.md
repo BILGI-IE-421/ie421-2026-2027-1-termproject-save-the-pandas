@@ -21,5 +21,5 @@ _Earthquakes can cause significant loss of lives and economic damage, but their 
 ## Our questions
 
 1. _How is a country's level of economic prosperity associated with earthquake-related loss of lives and economic damage?_
-2. _Do significant earthquakes associated with tsunamis have different patterns of human and economic losses than other significant earthquakes of comparable magnitude?_
+2. _How do human and economic losses differ between significant earthquakes with and without a recorded tsunami association within the same half-unit magnitude band?_
 3. _Are earthquakes with higher reported loss of lives also associated with greater economic damage?_
